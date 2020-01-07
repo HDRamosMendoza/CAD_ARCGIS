@@ -7,61 +7,44 @@ import arcpy
 pathWorkspace = os.getcwd()
 arcpy.env.workspace = pathWorkspace
 arcpy.env.overwriteOutput = True
-pathDWG = os.path.join(pathWorkspace,'DWG')
-prj = os.path.join(pathWorkspace,'PRJ\WGS84_18S.prj')
+path_mapDocumentos = os.path.join(pathWorkspace,'MXD\\DWG_TO_SHP.mxd')
 
-# Lista los archivos de la carpeta
-def dataSource(ruta = '.'):
-    return listdir(ruta)
-
-# Eliminar archivos de procesamiento.
-def deleteFiles(folder):
-	files_dump = [join(folder, c) for c in listdir(folder)]
-	files_dump = filter(lambda c: isfile(c), files_dump)
-	[os.remove(c) for c in files_dump]
-
-count = 0
-#input_cad = r"D:\RepositorioGitHub\CAD_ARCGIS\DWG\3101009011.dwg"
-out_geodatabase = "GDB\Demo.gdb"
-
-scale = "1000"
-
-# Execute CreateFeaturedataset
-#arcpy.CadToGeodatabase_conversion(input_cad_dataset, out_gdb_path, out_dataset_name, reference_scale)
-#arcpy.CreateFileGDB_management("C:/output", "HabitatAnalysis.gdb")
 try:
-    # Antes de entrar a la ruta se tiene que verificar si existe
-    if (os.path.exists(pathDWG)):
-        # deleteFiles(pathCSV)
-        outDir = dataSource(pathDWG)
-        for infile in outDir:
-            count = count + 1
-            # path DWG
-            input_cad = os.path.join(pathDWG, infile)
-            desc = arcpy.Describe(input_cad)
-            #print("Name: {}".format(desc.name))
-            #print("File {}".format(desc.file))
-            #print("Extension {}".format(desc.extension))
-            out_dataSet_CAD = "MSI_"+ desc.name.replace("."+ desc.extension, "").replace(" ", "").replace("-", "")
-            #for child in desc.children:
-            #print "\t%s = %s" % (child.name, child.dataType)
-            arcpy.CADToGeodatabase_conversion(
-                input_cad_datasets  = os.path.abspath(input_cad),
-                out_gdb_path        = out_geodatabase,
-                out_dataset_name    = out_dataSet_CAD,
-                reference_scale     = scale,
-                spatial_reference   = prj
-            )
+    print(path_mapDocumentos)
+    # Document MXD
+    mxd = arcpy.mapping.MapDocument(path_mapDocumentos)
+    # Setting up MXD
+    mxd.title           = "Automatización DWG to SHP"
+    mxd.author          = "Ing. Heber Daniel Ramos Mendoza"
+    mxd.summary         = "Automatización de proceso de referenciazción de DWG  a SHAPEFILE"
+    mxd.description     = "Automatizar proceso de  referenciazción de DWG a SHAPEFILE. Este proceso se da en la Subgerencia de Planeamiento Urbano y Catastro"
+    mxd.credits         = "HDRamosMendoza - Ing. Heber Daniel Ramos Mendoza"
+    mxd.tags            = "HDRamosMendoza, MarkGIS"
+    mxd.hyperlinkBase   = "https://hdramosmendoza.github.io/Perfil-Profesional/"
+    mxd.save()
 
-            # Validamos la existencia si el archivo tiene alguna información
-            #if os.stat(inPath).st_size == 0:
-            #print("Archivo vacio: {0}".format(infile))
+    # Obtener el marco de datos
+    df = arcpy.mapping.ListDataFrames(mxd)[0]
+    df.elementPositionX, df.elementPositionY = 0.5,0.5
+    df.elementWidth = 15
+    df.elementHeight = 25
 
-            # Porcentaje de archivos procesados
-            percentage = (count*100)/len(outDir)
-            print("Procesando {0}%".format(percentage))
+    # Creamos nueva capa
+    lyrDWG = arcpy.mapping.Layer(os.path.join(pathWorkspace,'DWG\\3101009011.dwg'))
 
-    else:
-        print("No existe RUTA")
+    # Agregue la capa al mapa en la parte inferior de la tabla de contenido en el marco de datos 0
+    arcpy.mapping.AddLayer(df, lyrDWG,"BOTTOM")
+    arcpy.RefreshActiveView()
+    mxd.save()
+
+    '''
+    mxd = arcpy.mapping.MapDocument("CURRENT")
+    df = arcpy.mapping.ListDataFrames(mxd, "Layers")[0]
+    addPoint = arcpy.mapping.Layer(r"C:\Temp\my.dwg\Point") # reference to point layer
+    addPolyline = arcpy.mapping.Layer(r"C:\Temp\my.dwg\Polyline") # reference to Polyline layer
+    arcpy.mapping.AddLayer(df, addPoint, "BOTTOM")
+    arcpy.mapping.AddLayer(df, addPolyline, "BOTTOM")
+    '''
+    
 except:
     print arcpy.GetMessages()

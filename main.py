@@ -22,8 +22,7 @@ def deleteFiles(folder):
 
 count = 0
 #input_cad = r"D:\RepositorioGitHub\CAD_ARCGIS\DWG\3101009011.dwg"
-out_geodatabase = "Demo.gdb"
-
+out_geodatabase = "GDB\DWG_TO_SHP.gdb"
 scale = "1000"
 
 # Execute CreateFeaturedataset
@@ -52,7 +51,6 @@ try:
                 reference_scale     = scale,
                 spatial_reference   = prj
             )
-
             # Validamos la existencia si el archivo tiene alguna información
             #if os.stat(inPath).st_size == 0:
             #print("Archivo vacio: {0}".format(infile))
