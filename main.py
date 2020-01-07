@@ -4,43 +4,35 @@ import os
 from os import listdir
 import arcpy
 
-pathDWG = r'D:\RepositorioGitHub\CAD_ARCGIS\DWG'
-prj = r'D:\RepositorioGitHub\CAD_ARCGIS/PRJ\WGS84_18S.prj'
+pathWorkspace = os.getcwd()
+
+arcpy.env.workspace = pathWorkspace
+arcpy.env.overwriteOutput = True
+
+pathDWG = os.path.join(pathWorkspace,'DWG')
+
+prj = os.path.join(pathWorkspace,'\PRJ\WGS84_18S.prj')
 
 # Lista los archivos de la carpeta
 def dataSource(ruta = '.'):
     return listdir(ruta)
 
-'''
 # Eliminar archivos de procesamiento.
 def deleteFiles(folder):
 	files_dump = [join(folder, c) for c in listdir(folder)]
 	files_dump = filter(lambda c: isfile(c), files_dump)
 	[os.remove(c) for c in files_dump]
-'''
-
-arcpy.env.workspace = "D:\RepositorioGitHub\CAD_ARCGIS"
-arcpy.env.overwriteOutput = True
 
 count = 0
 #input_cad = r"D:\RepositorioGitHub\CAD_ARCGIS\DWG\3101009011.dwg"
 out_geodatabase = "Demo.gdb"
-
 
 scale = "1000"
 
 # Execute CreateFeaturedataset
 #arcpy.CadToGeodatabase_conversion(input_cad_dataset, out_gdb_path, out_dataset_name, reference_scale)
 #arcpy.CreateFileGDB_management("C:/output", "HabitatAnalysis.gdb")
-'''
-arcpy.CADToGeodatabase_conversion(
-    input_cad,
-    out_geodatabase,
-    out_dataSet,
-    scale,
-    prj
-)
-'''
+
 # Antes de entrar a la ruta se tiene que verificar si existe
 if (os.path.exists(pathDWG)):
     # deleteFiles(pathCSV)
