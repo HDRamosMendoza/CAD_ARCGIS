@@ -22,7 +22,7 @@ def deleteFiles(folder):
 
 count = 0
 #input_cad = r"D:\RepositorioGitHub\CAD_ARCGIS\DWG\3101009011.dwg"
-out_geodatabase = "Demo.gdb"
+out_geodatabase = "GDB\Demo.gdb"
 
 scale = "1000"
 
@@ -61,8 +61,6 @@ try:
             percentage = (count*100)/len(outDir)
             print("Procesando {0}%".format(percentage))
 
-        # fileTxt = ls(pathWord)
-        # print pathWord+""+fileTxt
     else:
         print("No existe RUTA")
 except:
