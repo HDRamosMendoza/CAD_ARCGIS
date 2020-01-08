@@ -17,3 +17,7 @@ Apoyo:
 - https://gis.stackexchange.com/questions/124987/add-cad-feature-class-to-arcgis-using-arcpy
 - https://desktop.arcgis.com/es/arcmap/10.3/manage-data/cad/using-python-to-load-cad-data.htm
 - https://pro.arcgis.com/es/pro-app/tool-reference/data-management/make-feature-layer.htm
+- https://gis.stackexchange.com/questions/90736/setting-definition-query-on-arcpy-layer-from-shapefile
+- https://gis.stackexchange.com/questions/124400/working-with-autocad-layers-in-arcmap
+- https://pro.arcgis.com/es/pro-app/arcpy/classes/cursor.htm
+- https://desktop.arcgis.com/es/arcmap/10.3/analyze/arcpy-mapping/listlayers.htm
