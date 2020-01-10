@@ -23,6 +23,20 @@ try:
     mxd.tags            = "HDRamosMendoza, MarkGIS"
     mxd.hyperlinkBase   = "https://hdramosmendoza.github.io/Perfil-Profesional/"
     
+    '''
+    OBS 1: Asignar referencia espacial por definición.
+    infc = r"C:\data\citylim_unk.shp"
+    sr = arcpy.SpatialReference("NAD 1983 UTM Zone 11N")
+    arcpy.DefineProjection_management(infc, sr)
+
+    OBS 2: Asignar referencia espacial por .prj de un shapefile.
+    # get the coordinate system by describing a feature class
+    dsc = arcpy.Describe("citylim_utm11.shp")
+    coord_sys = dsc.spatialReference
+    # run the tool
+    arcpy.DefineProjection_management(in_dataset, coord_sys)
+    '''
+
     # Obtener el marco de datos
     df = arcpy.mapping.ListDataFrames(mxd)[0]
     df.elementPositionX, df.elementPositionY = 0.5,0.5
@@ -65,5 +79,7 @@ try:
           Esta pendiente averiguar reglas topologicas.
     '''
     
-except:
+except arcpy.ExecuteError:
     print arcpy.GetMessages()
+except Exception as ex:
+    print(ex.args[0])
