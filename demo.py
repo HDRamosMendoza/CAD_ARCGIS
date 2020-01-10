@@ -57,6 +57,13 @@ try:
     arcpy.mapping.AddLayer(df, addPoint, "BOTTOM")
     arcpy.mapping.AddLayer(df, addPolyline, "BOTTOM")
     '''
+
+    '''
+    NOTA: 
+        - Se tiene una pérdida de área de CAD a SHAPEFILE. Hasta donde se pudo avergiuar se da
+          una posible solución con reglas topologicas.
+          Esta pendiente averiguar reglas topologicas.
+    '''
     
 except:
     print arcpy.GetMessages()
