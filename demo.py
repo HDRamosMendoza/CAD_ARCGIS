@@ -7,7 +7,13 @@ import arcpy
 pathWorkspace = os.getcwd()
 arcpy.env.workspace = pathWorkspace
 arcpy.env.overwriteOutput = True
+pathDWG = os.path.join(pathWorkspace,'DWG')
+spatialReference_32718 = os.path.join(pathWorkspace,'PRJ\\WGS84_18S.prj')
 path_mapDocumentos = os.path.join(pathWorkspace,'MXD\\DWG_TO_SHP.mxd')
+out_geodatabase = "GDB\DWG_TO_SHP.gdb"
+count = 0
+scale = "1000"
+
 
 try:
     print(path_mapDocumentos)
@@ -37,11 +43,13 @@ try:
     arcpy.DefineProjection_management(in_dataset, coord_sys)
     '''
 
+    #arcpy.DefineProjection_management(infc, spatialReference_32718)
+
     # Obtener el marco de datos
     df = arcpy.mapping.ListDataFrames(mxd)[0]
-    df.elementPositionX, df.elementPositionY = 0.5,0.5
-    df.elementWidth     = 15
-    df.elementHeight    = 25
+    df.elementPositionX, df.elementPositionY = 0.5, 0.5
+    df.elementWidth  = 15
+    df.elementHeight = 25
 
     # 
     lyrDWG_point    = arcpy.mapping.Layer(os.path.join(pathWorkspace,'DWG\\3101009011.dwg\\Point'))
@@ -71,6 +79,8 @@ try:
     arcpy.mapping.AddLayer(df, addPoint, "BOTTOM")
     arcpy.mapping.AddLayer(df, addPolyline, "BOTTOM")
     '''
+
+
 
     '''
     NOTA: 

@@ -8,7 +8,7 @@ pathWorkspace = os.getcwd()
 arcpy.env.workspace = pathWorkspace
 arcpy.env.overwriteOutput = True
 pathDWG = os.path.join(pathWorkspace,'DWG')
-prj = os.path.join(pathWorkspace,'PRJ\WGS84_18S.prj')
+psthSR = os.path.join(pathWorkspace,'PRJ\WGS84_18S.prj')
 
 # Lista los archivos de la carpeta
 def dataSource(ruta = '.'):
@@ -29,39 +29,65 @@ scale = "1000"
 #arcpy.CadToGeodatabase_conversion(input_cad_dataset, out_gdb_path, out_dataset_name, reference_scale)
 #arcpy.CreateFileGDB_management("C:/output", "HabitatAnalysis.gdb")
 try:
-    # Antes de entrar a la ruta se tiene que verificar si existe
-    if (os.path.exists(pathDWG)):
-        # deleteFiles(pathCSV)
-        outDir = dataSource(pathDWG)
-        for infile in outDir:
-            count = count + 1
-            # path DWG
-            input_cad = os.path.join(pathDWG, infile)
-            desc = arcpy.Describe(input_cad)
-            #print("Name: {}".format(desc.name))
-            #print("File {}".format(desc.file))
-            #print("Extension {}".format(desc.extension))
-            out_dataSet_CAD = "MSI_"+ desc.name.replace("."+ desc.extension, "").replace(" ", "").replace("-", "")
-            #for child in desc.children:
-            #print "\t%s = %s" % (child.name, child.dataType)
-            arcpy.CADToGeodatabase_conversion(
-                input_cad_datasets  = os.path.abspath(input_cad),
-                out_gdb_path        = out_geodatabase,
-                out_dataset_name    = out_dataSet_CAD,
-                reference_scale     = scale,
-                spatial_reference   = prj
-            )
-            # Validamos la existencia si el archivo tiene alguna información
-            #if os.stat(inPath).st_size == 0:
-            #print("Archivo vacio: {0}".format(infile))
+    # Consulta si existe el MXD
+    if arcpy.Exists("MXD\\DWG_TO_SHP.mxd"):
+        print("Existe el MXD")
+        # Antes de entrar a la ruta se tiene que verificar si existe
+        if (os.path.exists(pathDWG)):
+            print("Entro")
+            # deleteFiles(pathCSV)
+            outDir = dataSource(pathDWG)
+            for infile in outDir:
+                count = count + 1
+                # path DWG
+                input_FileCAD = os.path.join(pathDWG, infile)
+                desc_CAD = arcpy.Describe(input_FileCAD)
+                
+                #print("File {}".format(desc.file))
+                print("Por crear el nombre")
+                # New name - DWG
+                out_dataSet_name_CAD = "MSI_"+ desc_CAD.name.replace("."+ desc_CAD.extension, "").replace(" ", "").replace("-", "")
+                print(desc_CAD.spatialReference.name)
+                # Spatial Reference == "unknown"
+                if desc_CAD.spatialReference.name == "Unknown":
+                    print("{0} no tiene referencial espacial o se desconoce".format(desc_CAD.name))
 
-            # Porcentaje de archivos procesados
-            percentage = (count*100)/len(outDir)
-            print("Procesando {0}%".format(percentage))
+                    # Assign spatial reference
+                    arcpy.DefineProjection_management(input_FileCAD, psthSR)
 
-        # fileTxt = ls(pathWord)
-        # print pathWord+""+fileTxt
+                # Spatial Reference
+                else:
+
+                    print("{0} : {1}".format(desc_CAD.name, desc_CAD.spatialReference.name))
+
+                #for child in desc.children:
+                #print "\t%s = %s" % (child.name, child.dataType)
+                #arcpy.Describe(fc).spatialReference
+
+                
+                '''
+                arcpy.CADToGeodatabase_conversion(
+                    input_cad_datasets  = os.path.abspath(input_cad),
+                    out_gdb_path        = out_geodatabase,
+                    out_dataset_name    = out_dataSet_name_CAD,
+                    reference_scale     = scale,
+                    spatial_reference   = prj
+                )
+                '''
+
+                # Validamos la existencia si el archivo tiene alguna información
+                #if os.stat(inPath).st_size == 0:
+                #print("Archivo vacio: {0}".format(infile))
+
+                # Porcentaje de archivos procesados
+                percentage = (count*100)/len(outDir)
+                print("Procesando {0}%".format(percentage))
+
+            # fileTxt = ls(pathWord)
+            # print pathWord+""+fileTxt
+        else:
+            print("No existe RUTA")
     else:
-        print("No existe RUTA")
+        print("Se debe de crear el MXD")
 except:
     print arcpy.GetMessages()
